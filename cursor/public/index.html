@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>South County Ride Share - Private Transportation Service</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- EmailJS removed - rides now go directly to driver portal -->
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" class="logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="#about" class="nav-link">ABOUT</a></li>
+                    <li><a href="#pricing" class="nav-link">PRICING</a></li>
+                    <li><a href="#reserve" class="nav-link">RESERVE</a></li>
+                    <li><a href="#reviews" class="nav-link">REVIEWS</a></li>
+                    <li><a href="driver-login.html" class="nav-link" style="font-size: 0.85rem;">DRIVER LOGIN</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" class="hero-logo">
+            <h1 class="hero-title">Welcome, and thank you for visiting South County Ride Share!</h1>
+            <p class="hero-subtitle">Proudly serving Rancho Santa Margarita, Coto de Caza, Dove Canyon, Ladera Ranch, Rancho Mission Viejo, and surrounding communities since 2016.</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section about-section">
+        <div class="container">
+            <h2 class="section-title">About</h2>
+            <div class="about-content">
+                <p class="section-text">
+                    South County Ride Share is a private transportation service based in Rancho Santa Margarita, California. 
+                    We offer scheduled, private rides to various destinations, including airports, train stations, and event venues. 
+                    Operating 24/7 for reserved rides, we provide reliable and comfortable transportation services to our local communities.
+                </p>
+                
+                <!-- Dropdown Menus -->
+                <div class="about-dropdowns" style="max-width: 1000px; margin: 3rem auto 0;">
+                    <!-- Our Drivers Dropdown -->
+                    <div class="about-dropdown-item">
+                        <button class="about-dropdown-btn" onclick="toggleAboutDropdown('drivers')">
+                            <span>Our Drivers</span>
+                            <span class="dropdown-arrow" id="drivers-arrow">▼</span>
+                        </button>
+                        <div class="about-dropdown-content" id="drivers-content" style="display: none;">
+                            <div id="driversDisplay" class="drivers-grid">
+                                <!-- Drivers will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Announcements Dropdown -->
+                    <div class="about-dropdown-item">
+                        <button class="about-dropdown-btn" onclick="toggleAboutDropdown('announcements')">
+                            <span>Announcements</span>
+                            <span class="dropdown-arrow" id="announcements-arrow">▼</span>
+                        </button>
+                        <div class="about-dropdown-content" id="announcements-content" style="display: none;">
+                            <div id="announcementsDisplay">
+                                <!-- Announcements will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact Us Dropdown -->
+                    <div class="about-dropdown-item">
+                        <button class="about-dropdown-btn" onclick="toggleAboutDropdown('contact')">
+                            <span>Contact Us</span>
+                            <span class="dropdown-arrow" id="contact-arrow">▼</span>
+                        </button>
+                        <div class="about-dropdown-content" id="contact-content" style="display: none;">
+                            <div class="contact-info">
+                                <h3 style="color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.5rem;">Get in Touch</h3>
+                                <div style="display: grid; gap: 1.5rem; max-width: 600px; margin: 0 auto;">
+                                    <div style="text-align: center;">
+                                        <strong style="color: var(--primary-color); display: block; margin-bottom: 0.5rem; font-size: 1.1rem;">Email</strong>
+                                        <a href="mailto:articuous14@gmail.com" style="color: #333; text-decoration: none; font-size: 1rem;">articuous14@gmail.com</a>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <strong style="color: var(--primary-color); display: block; margin-bottom: 0.5rem; font-size: 1.1rem;">Phone</strong>
+                                        <a href="tel:+1234567890" style="color: #333; text-decoration: none; font-size: 1rem;">Contact us for phone number</a>
+                                    </div>
+                                    <div style="text-align: center;">
+                                        <strong style="color: var(--primary-color); display: block; margin-bottom: 0.5rem; font-size: 1.1rem;">Location</strong>
+                                        <p style="color: #333; margin: 0; font-size: 1rem;">Rancho Santa Margarita, California</p>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 1rem;">
+                                        <p style="color: #666; font-size: 0.95rem; line-height: 1.6;">
+                                            We're here to help! Whether you need to schedule a ride, have questions about our services, 
+                                            or want to learn more about South County Ride Share, don't hesitate to reach out.
+                                        </p>
+                                    </div>
+                                    <div style="text-align: center; margin-top: 1.5rem;">
+                                        <a href="mailto:articuous14@gmail.com?subject=Inquiry from South County Ride Share Website" class="contact-action-btn">
+                                            Send Us an Email
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="section pricing-section">
+        <div class="container">
+            <h2 class="section-title">Transportation Pricing</h2>
+            <div class="pricing-content">
+                <p class="section-text">
+                    We specialize in transporting you, stress free, to multiple destinations near and far. 
+                    Pricing for our most popular destinations can be found below. If your destination is not listed, 
+                    please contact us for a price quote.
+                </p>
+                
+                <div class="destinations-grid">
+                    <div class="destination-card">
+                        <h3 class="destination-name">John Wayne (SNA)</h3>
+                        <p class="destination-desc">Transportation Service to or from John Wayne Airport</p>
+                        <a href="rates.html?destination=john-wayne-sna" class="rates-btn">View Our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">Los Angeles (LAX)</h3>
+                        <p class="destination-desc">Transportation Service to or from Los Angeles Int Airport</p>
+                        <a href="rates.html?destination=los-angeles-lax" class="rates-btn">View Our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">Long Beach (LGB)</h3>
+                        <p class="destination-desc">Transportation Service to or from Long Beach Airport</p>
+                        <a href="rates.html?destination=long-beach-lgb" class="rates-btn">View Our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">San Diego (SAN)</h3>
+                        <p class="destination-desc">Transportation Service to or from San Diego Airport</p>
+                        <a href="rates.html?destination=san-diego-san" class="rates-btn">View our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">Ontario (ONT)</h3>
+                        <p class="destination-desc">Transportation Service to or from Ontario Airport</p>
+                        <a href="rates.html?destination=ontario-ont" class="rates-btn">View Our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">Cross Border (CBX)</h3>
+                        <p class="destination-desc">Transportation Service to or from CBX Border Bridge</p>
+                        <a href="rates.html?destination=cross-border-cbx" class="rates-btn">View Our Rates</a>
+                    </div>
+                    
+                    <div class="destination-card">
+                        <h3 class="destination-name">Long Beach Cruise Terminal</h3>
+                        <p class="destination-desc">Transportation Service to or from Long Beach Cruises</p>
+                        <a href="rates.html?destination=long-beach-cruise" class="rates-btn">View our Rates</a>
+                    </div>
+                </div>
+                
+                <div class="hours-info">
+                    <div class="hours-item">
+                        <h4 class="hours-title">Ride Hours:</h4>
+                        <p class="hours-text">Reserved Rides are available 24/7</p>
+                    </div>
+                    <div class="hours-item">
+                        <h4 class="hours-title">Administrative Hours:</h4>
+                        <p class="hours-text">Monday - Friday: 8:00 AM - 7:00 PM<br>Saturday/Sunday 10:00 AM - 3:00 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reserve Section -->
+    <section id="reserve" class="section reserve-section">
+        <div class="container">
+            <h2 class="section-title">Reserve</h2>
+            <div class="reserve-content">
+                <p class="section-text">
+                    Submit a reservation request for your ride. Due to scheduling constraints, we may not always be able to accommodate every request. 
+                    A member of South County Ride Share will reach out to you with either a confirmation or an explanation if we are unable to fulfill your request.
+                </p>
+                <form class="reservation-form" id="reservationForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pickup">Pickup Location</label>
+                        <select id="pickup" name="pickup" required onchange="handleLocationChange('pickup')">
+                            <option value="">Select Pickup Location</option>
+                            <option value="Home">Home</option>
+                            <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                            <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                            <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                            <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                            <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                            <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                            <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="pickupOther" name="pickupOther" placeholder="Please specify pickup location" style="display: none; margin-top: 0.5rem;">
+                        <div id="pickupOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                            <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Pickup Address</h4>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="pickupOtherStreet">Street Address</label>
+                                <input type="text" id="pickupOtherStreet" name="pickupOtherStreet" placeholder="123 Main Street">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="pickupOtherCity">City</label>
+                                <input type="text" id="pickupOtherCity" name="pickupOtherCity" placeholder="City">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <div class="form-group">
+                                    <label for="pickupOtherState">State</label>
+                                    <input type="text" id="pickupOtherState" name="pickupOtherState" placeholder="CA" maxlength="2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pickupOtherZip">Zip Code</label>
+                                    <input type="text" id="pickupOtherZip" name="pickupOtherZip" placeholder="92688" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="pickupHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                            <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Pickup Address</h4>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="pickupStreet">Street Address</label>
+                                <input type="text" id="pickupStreet" name="pickupStreet" placeholder="123 Main Street">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="pickupCity">City</label>
+                                <input type="text" id="pickupCity" name="pickupCity" placeholder="City">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <div class="form-group">
+                                    <label for="pickupState">State</label>
+                                    <input type="text" id="pickupState" name="pickupState" placeholder="CA" maxlength="2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="pickupZip">Zip Code</label>
+                                    <input type="text" id="pickupZip" name="pickupZip" placeholder="92688" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="destination">Destination</label>
+                        <select id="destination" name="destination" required onchange="handleLocationChange('destination')">
+                            <option value="">Select Destination</option>
+                            <option value="Home">Home</option>
+                            <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                            <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                            <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                            <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                            <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                            <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                            <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <input type="text" id="destinationOther" name="destinationOther" placeholder="Please specify destination" style="display: none; margin-top: 0.5rem;">
+                        <div id="destinationOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                            <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Destination Address</h4>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="destinationOtherStreet">Street Address</label>
+                                <input type="text" id="destinationOtherStreet" name="destinationOtherStreet" placeholder="123 Main Street">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="destinationOtherCity">City</label>
+                                <input type="text" id="destinationOtherCity" name="destinationOtherCity" placeholder="City">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <div class="form-group">
+                                    <label for="destinationOtherState">State</label>
+                                    <input type="text" id="destinationOtherState" name="destinationOtherState" placeholder="CA" maxlength="2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="destinationOtherZip">Zip Code</label>
+                                    <input type="text" id="destinationOtherZip" name="destinationOtherZip" placeholder="92688" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="destinationHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                            <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Destination Address</h4>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="destinationStreet">Street Address</label>
+                                <input type="text" id="destinationStreet" name="destinationStreet" placeholder="123 Main Street">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0.75rem;">
+                                <label for="destinationCity">City</label>
+                                <input type="text" id="destinationCity" name="destinationCity" placeholder="City">
+                            </div>
+                            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                <div class="form-group">
+                                    <label for="destinationState">State</label>
+                                    <input type="text" id="destinationState" name="destinationState" placeholder="CA" maxlength="2">
+                                </div>
+                                <div class="form-group">
+                                    <label for="destinationZip">Zip Code</label>
+                                    <input type="text" id="destinationZip" name="destinationZip" placeholder="92688" maxlength="10">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="isAirportTrip" name="isAirportTrip" onchange="toggleFlightInfo()">
+                            <span>This is an airport trip</span>
+                        </label>
+                    </div>
+                    <div id="flightInfoSection" style="display: none; background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label for="flightNumber">Flight Number</label>
+                            <input type="text" id="flightNumber" name="flightNumber" placeholder="e.g., AA1234">
+                        </div>
+                        <div class="form-group">
+                            <label for="airline">Airline</label>
+                            <input type="text" id="airline" name="airline" placeholder="e.g., American Airlines">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="time">Time</label>
+                        <input type="time" id="time" name="time" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="passengers">Number of Passengers</label>
+                        <input type="number" id="passengers" name="passengers" min="1" max="6" required onchange="updateVehicleTypeOptions()" oninput="updateVehicleTypeOptions()">
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; line-height: 1.5;">
+                            <strong>Vehicle capacity:</strong> Sedans (up to 3 passengers), SUV (up to 4 passengers), XL SUV (up to 6 passengers). 
+                            Vehicle options will automatically adjust based on your passenger count. Maximum 6 passengers per ride.
+                        </p>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicleType">Vehicle Type</label>
+                        <select id="vehicleType" name="vehicleType" required>
+                            <option value="">Select Vehicle Type</option>
+                            <option value="Sedans">Sedans</option>
+                            <option value="SUV">SUV</option>
+                            <option value="XL SUV">XL SUV</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="baggageClaimGroup" style="display: none;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="baggageClaim" name="baggageClaim" value="Y">
+                            <span>Driver will meet passenger in baggage claim area</span>
+                        </label>
+                    </div>
+                    <div class="form-group" style="margin-top: 2rem; padding-top: 2rem; border-top: 2px solid #e0e0e0;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600; font-size: 1.1rem;">
+                            <input type="checkbox" id="roundTrip" name="roundTrip" onchange="toggleRoundTrip()">
+                            <span>Round Trip</span>
+                        </label>
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; margin-left: 1.75rem;">
+                            Check this box if you need a return trip. The return trip will be created as a separate reservation.
+                        </p>
+                    </div>
+                    <div id="returnTripSection" style="display: none; margin-top: 2rem; padding: 2rem; background: #f8f9fa; border-radius: 10px; border: 2px solid var(--primary-color);">
+                        <h3 style="color: var(--primary-color); margin-bottom: 1.5rem; font-size: 1.3rem;">Return Trip Details</h3>
+                        <div class="form-group">
+                            <label for="returnPickup">Pickup Location</label>
+                            <select id="returnPickup" name="returnPickup" onchange="handleLocationChange('returnPickup')">
+                                <option value="">Select Pickup Location</option>
+                                <option value="Home">Home</option>
+                                <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                                <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                                <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                                <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                                <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                                <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                                <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="returnPickupOther" name="returnPickupOther" placeholder="Please specify pickup location" style="display: none; margin-top: 0.5rem;">
+                            <div id="returnPickupOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #ffffff; border-radius: 5px;">
+                                <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Pickup Address</h4>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnPickupOtherStreet">Street Address</label>
+                                    <input type="text" id="returnPickupOtherStreet" name="returnPickupOtherStreet" placeholder="123 Main Street">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnPickupOtherCity">City</label>
+                                    <input type="text" id="returnPickupOtherCity" name="returnPickupOtherCity" placeholder="City">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                    <div class="form-group">
+                                        <label for="returnPickupOtherState">State</label>
+                                        <input type="text" id="returnPickupOtherState" name="returnPickupOtherState" placeholder="CA" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="returnPickupOtherZip">Zip Code</label>
+                                        <input type="text" id="returnPickupOtherZip" name="returnPickupOtherZip" placeholder="92688" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="returnPickupHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #ffffff; border-radius: 5px;">
+                                <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Pickup Address</h4>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnPickupStreet">Street Address</label>
+                                    <input type="text" id="returnPickupStreet" name="returnPickupStreet" placeholder="123 Main Street">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnPickupCity">City</label>
+                                    <input type="text" id="returnPickupCity" name="returnPickupCity" placeholder="City">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                    <div class="form-group">
+                                        <label for="returnPickupState">State</label>
+                                        <input type="text" id="returnPickupState" name="returnPickupState" placeholder="CA" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="returnPickupZip">Zip Code</label>
+                                        <input type="text" id="returnPickupZip" name="returnPickupZip" placeholder="92688" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnDestination">Destination</label>
+                            <select id="returnDestination" name="returnDestination" onchange="handleLocationChange('returnDestination')">
+                                <option value="">Select Destination</option>
+                                <option value="Home">Home</option>
+                                <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                                <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                                <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                                <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                                <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                                <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                                <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="returnDestinationOther" name="returnDestinationOther" placeholder="Please specify destination" style="display: none; margin-top: 0.5rem;">
+                            <div id="returnDestinationOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #ffffff; border-radius: 5px;">
+                                <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Destination Address</h4>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnDestinationOtherStreet">Street Address</label>
+                                    <input type="text" id="returnDestinationOtherStreet" name="returnDestinationOtherStreet" placeholder="123 Main Street">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnDestinationOtherCity">City</label>
+                                    <input type="text" id="returnDestinationOtherCity" name="returnDestinationOtherCity" placeholder="City">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                    <div class="form-group">
+                                        <label for="returnDestinationOtherState">State</label>
+                                        <input type="text" id="returnDestinationOtherState" name="returnDestinationOtherState" placeholder="CA" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="returnDestinationOtherZip">Zip Code</label>
+                                        <input type="text" id="returnDestinationOtherZip" name="returnDestinationOtherZip" placeholder="92688" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="returnDestinationHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #ffffff; border-radius: 5px;">
+                                <h4 style="margin-bottom: 1rem; font-size: 1rem; color: #333;">Destination Address</h4>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnDestinationStreet">Street Address</label>
+                                    <input type="text" id="returnDestinationStreet" name="returnDestinationStreet" placeholder="123 Main Street">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <label for="returnDestinationCity">City</label>
+                                    <input type="text" id="returnDestinationCity" name="returnDestinationCity" placeholder="City">
+                                </div>
+                                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+                                    <div class="form-group">
+                                        <label for="returnDestinationState">State</label>
+                                        <input type="text" id="returnDestinationState" name="returnDestinationState" placeholder="CA" maxlength="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="returnDestinationZip">Zip Code</label>
+                                        <input type="text" id="returnDestinationZip" name="returnDestinationZip" placeholder="92688" maxlength="10">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="returnIsAirportTrip" name="returnIsAirportTrip" onchange="toggleFlightInfo('return')">
+                                <span>This is an airport trip</span>
+                            </label>
+                        </div>
+                        <div id="returnFlightInfoSection" style="display: none; background: #ffffff; padding: 1rem; border-radius: 5px; margin-bottom: 1rem;">
+                            <div class="form-group">
+                                <label for="returnFlightNumber">Flight Number</label>
+                                <input type="text" id="returnFlightNumber" name="returnFlightNumber" placeholder="e.g., AA1234">
+                            </div>
+                            <div class="form-group">
+                                <label for="returnAirline">Airline</label>
+                                <input type="text" id="returnAirline" name="returnAirline" placeholder="e.g., American Airlines">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnDate">Date</label>
+                            <input type="date" id="returnDate" name="returnDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="returnTime">Time</label>
+                            <input type="time" id="returnTime" name="returnTime">
+                        </div>
+                        <div class="form-group">
+                            <label for="returnPassengers">Number of Passengers</label>
+                            <input type="number" id="returnPassengers" name="returnPassengers" min="1" max="6" onchange="updateVehicleTypeOptions('return')" oninput="updateVehicleTypeOptions('return')">
+                            <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem; line-height: 1.5;">
+                                <strong>Vehicle capacity:</strong> Sedans (up to 3 passengers), SUV (up to 4 passengers), XL SUV (up to 6 passengers). 
+                                Vehicle options will automatically adjust based on your passenger count. Maximum 6 passengers per ride.
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            <label for="returnVehicleType">Vehicle Type</label>
+                            <select id="returnVehicleType" name="returnVehicleType">
+                                <option value="">Select Vehicle Type</option>
+                                <option value="Sedans">Sedans</option>
+                                <option value="SUV">SUV</option>
+                                <option value="XL SUV">XL SUV</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="returnBaggageClaimGroup" style="display: none;">
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="returnBaggageClaim" name="returnBaggageClaim" value="Y">
+                                <span>Driver will meet passenger in baggage claim area</span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn" id="submitBtn">Submit Reservation Request</button>
+                    <div id="formMessage" class="form-message"></div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews" class="section reviews-section">
+        <div class="container">
+            <h2 class="section-title">Customer Reviews</h2>
+            <div class="reviews-content">
+                <div class="review-form-container" style="margin-bottom: 3rem; background: var(--white); padding: 2rem; border-radius: 10px; box-shadow: var(--shadow);">
+                    <h3 style="color: var(--primary-color); margin-bottom: 1.5rem;">Share Your Experience</h3>
+                    <form class="review-form" id="reviewForm">
+                        <div class="form-group">
+                            <label for="reviewName">Your Name</label>
+                            <input type="text" id="reviewName" name="reviewName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewEmail">Your Email</label>
+                            <input type="email" id="reviewEmail" name="reviewEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewRating">Rating</label>
+                            <div class="rating-input">
+                                <input type="radio" id="rating1" name="reviewRating" value="1" required>
+                                <label for="rating1">⭐</label>
+                                <input type="radio" id="rating2" name="reviewRating" value="2" required>
+                                <label for="rating2">⭐</label>
+                                <input type="radio" id="rating3" name="reviewRating" value="3" required>
+                                <label for="rating3">⭐</label>
+                                <input type="radio" id="rating4" name="reviewRating" value="4" required>
+                                <label for="rating4">⭐</label>
+                                <input type="radio" id="rating5" name="reviewRating" value="5" required>
+                                <label for="rating5">⭐</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="reviewComment">Your Review</label>
+                            <textarea id="reviewComment" name="reviewComment" rows="5" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; font-family: inherit;"></textarea>
+                        </div>
+                        <button type="submit" class="submit-btn" id="reviewSubmitBtn">Submit Review</button>
+                        <div id="reviewMessage" class="form-message"></div>
+                        <p style="font-size: 0.85rem; color: #666; margin-top: 1rem; text-align: center;">
+                            All reviews are subject to approval before being published.
+                        </p>
+                    </form>
+                </div>
+                
+                <div id="reviewsDisplay" class="reviews-grid">
+                    <!-- 6 most recent approved reviews will be loaded here -->
+                </div>
+                
+                <div id="olderReviewsSection" style="margin-top: 3rem; display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                        <h3 style="color: var(--primary-color); margin: 0;">Older Reviews</h3>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <label for="reviewRatingFilter" style="font-weight: 600; color: var(--primary-color);">Filter by Rating:</label>
+                            <select id="reviewRatingFilter" style="padding: 0.5rem 1rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; cursor: pointer; background: var(--white);">
+                                <option value="all">All Ratings</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="olderReviewsDisplay" class="reviews-grid">
+                        <!-- Older reviews will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div style="margin-bottom: 1.5rem;">
+                <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" style="max-width: 150px; height: auto; filter: brightness(0) invert(1);">
+            </div>
+            <p>&copy; 2024 South County Ride Share. All rights reserved.</p>
+            <p>Serving Rancho Santa Margarita, Coto de Caza, Dove Canyon, Ladera Ranch, Rancho Mission Viejo, and surrounding communities since 2016.</p>
+        </div>
+    </footer>
+
+    <script src="driver-auth.js"></script>
+    <script src="/api-client.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
