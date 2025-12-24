@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Registration | South County Ride Share</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .register-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .register-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .register-card h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .register-card p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .register-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .register-btn {
+            padding: 1rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .register-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .register-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .form-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .form-message.error {
+            background: #f8d7da;
+            color: #dc3545;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .form-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .invite-code-display {
+            background: #e7f3ff;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .invite-code-display strong {
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-page">
+        <div class="register-card">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" style="max-width: 200px; height: auto; margin-bottom: 1rem;">
+            </div>
+            <h1>Driver Registration</h1>
+            <p>Create your driver account</p>
+            
+            <!-- Step 1: Enter Invite Link -->
+            <div id="inviteStep" style="display: block;">
+                <form class="register-form" id="inviteForm">
+                    <div class="form-group">
+                        <label for="inviteLink">Invite Link or Code *</label>
+                        <input type="text" id="inviteLink" name="inviteLink" required placeholder="Paste invite link or enter invite code">
+                        <small style="color: #666; margin-top: 0.25rem;">Enter the invite link or code provided by the administrator</small>
+                    </div>
+                    <button type="submit" class="register-btn" id="verifyInviteBtn">Continue</button>
+                    <div id="inviteMessage" class="form-message" style="display: none;"></div>
+                </form>
+            </div>
+            
+            <!-- Step 2: Registration Form -->
+            <div id="registrationStep" style="display: none;">
+                <div class="invite-code-display" style="margin-bottom: 1.5rem;">
+                    <strong>Invite Code:</strong> <span id="inviteCodeText"></span>
+                </div>
+                
+                <form class="register-form" id="registerForm">
+                    <input type="hidden" id="inviteCode" name="inviteCode">
+                    
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="age">Age *</label>
+                        <input type="number" id="age" name="age" required min="18" max="100">
+                        <small style="color: #666; margin-top: 0.25rem;">Must be 18 or older</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Street Address *</label>
+                        <input type="text" id="address" name="address" required placeholder="123 Main Street">
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="city">City *</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">State *</label>
+                            <input type="text" id="state" name="state" required placeholder="CA" maxlength="2">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="zipCode">Zip Code *</label>
+                            <input type="text" id="zipCode" name="zipCode" required pattern="[0-9]{5}" placeholder="92688">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required placeholder="(555) 123-4567">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required autocomplete="email">
+                    </div>
+                    
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid #e0e0e0;">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.1rem;">Vehicle Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="vehicleType">Vehicle Type *</label>
+                        <select id="vehicleType" name="vehicleType" required>
+                            <option value="">Select vehicle type</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="XL SUV">XL SUV</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicleMake">Vehicle Make *</label>
+                        <input type="text" id="vehicleMake" name="vehicleMake" required placeholder="e.g., Toyota, Ford, Honda">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicleModel">Vehicle Model *</label>
+                        <input type="text" id="vehicleModel" name="vehicleModel" required placeholder="e.g., Camry, Explorer, Accord">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="vehicleColor">Vehicle Color *</label>
+                        <input type="text" id="vehicleColor" name="vehicleColor" required placeholder="e.g., White, Black, Silver">
+                    </div>
+                    
+                    <hr style="margin: 1.5rem 0; border: none; border-top: 2px solid #e0e0e0;">
+                    
+                    <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.1rem;">Account Credentials</h3>
+                    
+                    <div class="form-group">
+                        <label for="username">Username *</label>
+                        <input type="text" id="username" name="username" required autocomplete="username">
+                        <small style="color: #666; margin-top: 0.25rem;">This will be used to log in</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" required autocomplete="new-password" minlength="6">
+                        <small style="color: #666; margin-top: 0.25rem;">Minimum 6 characters</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required autocomplete="new-password">
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="button" class="register-btn" onclick="goBackToInviteStep()" style="flex: 1; background: #6c757d;">Back</button>
+                        <button type="submit" class="register-btn" id="registerBtn" style="flex: 2;">Create Account</button>
+                    </div>
+                    <div id="registerMessage" class="form-message" style="display: none;"></div>
+                </form>
+            </div>
+            
+            <a href="driver-login.html" class="back-link">← Back to Login</a>
+        </div>
+    </div>
+    
+    <script src="driver-auth.js"></script>
+    <script>
+        let currentInviteCode = null;
+        
+        // Check if invite code is in URL (from admin link)
+        const urlParams = new URLSearchParams(window.location.search);
+        const inviteCodeFromUrl = urlParams.get('code');
+        
+        if (inviteCodeFromUrl) {
+            // Pre-fill and validate invite code from URL
+            document.getElementById('inviteLink').value = inviteCodeFromUrl;
+            validateAndProceed(inviteCodeFromUrl);
+        }
+        
+        // Handle invite form submission
+        document.getElementById('inviteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const inviteInput = document.getElementById('inviteLink').value.trim();
+            const messageDiv = document.getElementById('inviteMessage');
+            
+            // Extract invite code from URL or use as-is
+            let inviteCode = inviteInput;
+            
+            // If it's a URL, extract the code parameter
+            if (inviteInput.includes('?')) {
+                try {
+                    const url = new URL(inviteInput);
+                    inviteCode = url.searchParams.get('code') || inviteInput;
+                } catch (e) {
+                    // If URL parsing fails, try to extract code manually
+                    const match = inviteInput.match(/code=([^&]+)/);
+                    if (match) {
+                        inviteCode = match[1];
+                    }
+                }
+            }
+            
+            if (!inviteCode) {
+                messageDiv.textContent = 'Please enter a valid invite link or code';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            validateAndProceed(inviteCode);
+        });
+        
+        function validateAndProceed(inviteCode) {
+            const messageDiv = document.getElementById('inviteMessage');
+            
+            // Validate invite code
+            const invite = validateInviteCode(inviteCode);
+            
+            if (!invite) {
+                messageDiv.textContent = 'Invalid or already used invite code. Please contact an administrator for a valid invite.';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            // Valid invite - proceed to registration form
+            currentInviteCode = inviteCode;
+            document.getElementById('inviteCode').value = inviteCode;
+            document.getElementById('inviteCodeText').textContent = inviteCode;
+            document.getElementById('inviteStep').style.display = 'none';
+            document.getElementById('registrationStep').style.display = 'block';
+        }
+        
+        function goBackToInviteStep() {
+            document.getElementById('inviteStep').style.display = 'block';
+            document.getElementById('registrationStep').style.display = 'none';
+            currentInviteCode = null;
+        }
+        
+        // Handle registration form submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const messageDiv = document.getElementById('registerMessage');
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Get form values
+            const inviteCode = document.getElementById('inviteCode').value;
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const address = document.getElementById('address').value;
+            const city = document.getElementById('city').value;
+            const state = document.getElementById('state').value;
+            const zipCode = document.getElementById('zipCode').value;
+            const phone = document.getElementById('phone').value;
+            const email = document.getElementById('email').value;
+            const vehicleType = document.getElementById('vehicleType').value;
+            const vehicleMake = document.getElementById('vehicleMake').value;
+            const vehicleModel = document.getElementById('vehicleModel').value;
+            const vehicleColor = document.getElementById('vehicleColor').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                messageDiv.textContent = 'Passwords do not match';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            // Validate password length
+            if (password.length < 6) {
+                messageDiv.textContent = 'Password must be at least 6 characters long';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            // Validate age
+            if (parseInt(age) < 18) {
+                messageDiv.textContent = 'You must be 18 or older to register as a driver';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                return;
+            }
+            
+            // Disable button
+            registerBtn.disabled = true;
+            registerBtn.textContent = 'Creating Account...';
+            
+            try {
+                // Build full address
+                const fullAddress = `${address}, ${city}, ${state} ${zipCode}`;
+                
+                // Build vehicle string
+                const vehicleString = `${vehicleType} - ${vehicleColor} ${vehicleMake} ${vehicleModel}`;
+                
+                // Register driver
+                const driver = registerDriver({
+                    name: name,
+                    username: username,
+                    email: email,
+                    phone: phone,
+                    password: password,
+                    age: age,
+                    address: fullAddress,
+                    vehicle: vehicleString,
+                    vehicles: [vehicleString]
+                }, inviteCode);
+                
+                // Success
+                messageDiv.textContent = 'Account created successfully! Redirecting to login...';
+                messageDiv.className = 'form-message success';
+                messageDiv.style.display = 'block';
+                
+                // Redirect to login after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'driver-login.html?registered=true';
+                }, 2000);
+                
+            } catch (error) {
+                // Error
+                messageDiv.textContent = error.message || 'Error creating account. Please try again.';
+                messageDiv.className = 'form-message error';
+                messageDiv.style.display = 'block';
+                registerBtn.disabled = false;
+                registerBtn.textContent = 'Create Account';
+            }
+        });
+        
+        // Check if redirected from successful registration
+        const urlParams2 = new URLSearchParams(window.location.search);
+        if (urlParams2.get('registered') === 'true') {
+            const messageDiv = document.getElementById('inviteMessage');
+            messageDiv.textContent = 'Registration successful! You can now log in.';
+            messageDiv.className = 'form-message success';
+            messageDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+

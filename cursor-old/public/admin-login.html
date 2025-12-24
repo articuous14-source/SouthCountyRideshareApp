@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - Login | South County Ride Share</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .login-page {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8f8f8 0%, #e8e8e8 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 3rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        
+        .login-card h1 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+        
+        .login-card p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-group input {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .login-btn {
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .login-message {
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .login-message.error {
+            background: #f8d7da;
+            color: var(--error-color);
+            border: 1px solid #f5c6cb;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" style="max-width: 200px; height: auto; margin-bottom: 1rem;">
+            </div>
+            <h1>Admin Portal</h1>
+            <p>Sign in to access the admin dashboard</p>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+                <div id="loginMessage" class="login-message" style="display: none;"></div>
+            </form>
+            <a href="index.html" class="back-link">← Back to Home</a>
+        </div>
+    </div>
+    
+    <script src="/api-client.js"></script>
+    <script src="driver-auth.js"></script>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                const messageDiv = document.getElementById('loginMessage');
+                
+                const admin = authenticateAdmin(username, password);
+                
+                if (admin) {
+                    setCurrentAdmin(admin);
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    messageDiv.textContent = 'Invalid username or password';
+                    messageDiv.className = 'login-message error';
+                    messageDiv.style.display = 'block';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+

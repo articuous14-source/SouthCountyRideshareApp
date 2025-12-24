@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard | South County Ride Share</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <style>
+        .dashboard-page {
+            min-height: 100vh;
+            background: var(--light-bg);
+        }
+        
+        .dashboard-header {
+            background: var(--off-white);
+            color: var(--primary-color);
+            padding: 1.5rem 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .dashboard-header > .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-header h1 {
+            font-size: 1.8rem;
+            margin: 0;
+        }
+        
+        .driver-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .driver-name {
+            font-weight: 600;
+        }
+        
+        .logout-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--white);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .dashboard-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: var(--white);
+            padding: 0.5rem;
+            border-radius: 5px;
+            box-shadow: var(--shadow);
+        }
+        
+        .view-btn {
+            flex: 1;
+            padding: 0.75rem;
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .view-btn.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .rides-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .ride-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .ride-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .ride-card.pending {
+            border-left: 4px solid #ffc107;
+        }
+        
+        .ride-card.accepted {
+            border-left: 4px solid #28a745;
+        }
+        
+        .ride-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        
+        .ride-status {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .ride-status.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .ride-status.accepted {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .ride-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .accept-btn {
+            padding: 0.75rem 2rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .accept-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        .accept-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .calendar-view {
+            display: none;
+        }
+        
+        .calendar-view.active {
+            display: block;
+        }
+        
+        .list-view {
+            display: none;
+        }
+        
+        .list-view.active {
+            display: block;
+        }
+        
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        
+        .calendar-day {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .calendar-day-header {
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-bg);
+        }
+        
+        .day-rides {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .day-ride-item {
+            padding: 0.75rem;
+            background: var(--light-bg);
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .empty-state h3 {
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .days-off-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+        
+        .days-off-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        
+        .add-day-off {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .days-off-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .day-off-item {
+            background: var(--light-bg);
+            padding: 1rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .day-off-item button {
+            padding: 0.5rem 1rem;
+            background: var(--error-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+        
+        .day-off-item button:hover {
+            background: #c82333;
+        }
+        
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .notification-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent-color);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .notification-item:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .notification-item.unread {
+            background: #f0f8ff;
+            border-left-color: var(--primary-color);
+        }
+        
+        .notification-item.read {
+            opacity: 0.7;
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .notification-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 0;
+        }
+        
+        .notification-time {
+            color: #999;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+        
+        .notification-body {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+        
+        .notification-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        
+        .notification-badge {
+            background: var(--error-color);
+            color: var(--white);
+            border-radius: 10px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+        }
+        
+        .give-up-btn {
+            padding: 0.5rem 1rem;
+            background: #dc3545;
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .give-up-btn:hover {
+            background: #c82333;
+        }
+        
+        .take-shift-btn {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+        }
+        
+        .take-shift-btn:hover {
+            background: var(--secondary-color);
+        }
+        
+        /* Reschedule Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-header h2 {
+            color: var(--primary-color);
+            margin: 0;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #999;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .close-btn:hover {
+            color: var(--primary-color);
+        }
+        
+        .modal-form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .modal-form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        
+        .modal-form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .modal-form-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .modal-actions button {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        .modal-cancel-btn {
+            background: #6c757d;
+            color: var(--white);
+        }
+        
+        .modal-cancel-btn:hover {
+            background: #5a6268;
+        }
+        
+        .modal-submit-btn {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .modal-submit-btn:hover {
+            background: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-page">
+        <div class="dashboard-header">
+            <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 1.5rem;">
+                    <a href="index.html" style="display: flex; align-items: center;">
+                        <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" style="height: 50px; width: auto;">
+                    </a>
+                    <h1 style="margin: 0; font-size: 1.8rem;">Driver Dashboard</h1>
+                </div>
+                <div class="driver-info">
+                    <span class="driver-name" id="driverName">Loading...</span>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Confirmation Alert Banner -->
+            <div id="confirmationAlert" style="display: none; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; padding: 1.5rem; border-radius: 10px; margin-bottom: 2rem; box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3); border-left: 5px solid #fff;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                    <div style="flex: 1; min-width: 300px;">
+                        <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span style="font-size: 1.5rem;">⚠️</span>
+                            <span>Rides Need Confirmation</span>
+                        </h3>
+                        <p style="margin: 0; font-size: 1rem; opacity: 0.95;" id="confirmationAlertText"></p>
+                    </div>
+                    <button onclick="viewUnconfirmedRides()" style="background: white; color: #ff6b6b; border: none; padding: 0.75rem 1.5rem; border-radius: 5px; font-weight: 600; cursor: pointer; font-size: 1rem; transition: transform 0.2s ease; white-space: nowrap;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                        View Rides
+                    </button>
+                </div>
+            </div>
+            
+            <div class="view-toggle">
+                <button class="view-btn active" onclick="switchView('list')" id="btn-list">List View</button>
+                <button class="view-btn" onclick="switchView('calendar')" id="btn-calendar">Calendar View</button>
+                <button class="view-btn" onclick="switchView('days-off')" id="btn-days-off">Days Off</button>
+                <button class="view-btn" onclick="switchView('notifications')" id="btn-notifications">
+                    Notifications
+                    <span id="notificationBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <button class="view-btn" onclick="switchView('messages')" id="btn-messages">
+                    Messages
+                    <span id="messagesBadge" class="notification-badge" style="display: none;">0</span>
+                </button>
+                <button class="view-btn" onclick="switchView('profile')" id="btn-profile">Profile</button>
+            </div>
+            
+            <div id="listView" class="list-view active">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="color: var(--primary-color); margin: 0;">Rides</h2>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <label for="rideFilter" style="font-weight: 600; color: var(--primary-color); white-space: nowrap;">Filter:</label>
+                        <select id="rideFilter" style="padding: 0.75rem 1rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; cursor: pointer; background: var(--white); color: var(--primary-color); font-weight: 600;" onchange="loadRides()">
+                            <option value="all" selected>All Rides</option>
+                            <option value="pending">Pending</option>
+                            <option value="my-rides">My Rides</option>
+                            <option value="needs-confirmation">Needs Confirmation</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="ridesList" class="rides-container">
+                    <!-- Rides will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="calendarView" class="calendar-view">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h2 style="color: var(--primary-color); margin: 0;">Calendar View</h2>
+                    <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <label for="calendarMonthFilter" style="font-weight: 600; color: var(--primary-color); white-space: nowrap;">Month:</label>
+                            <select id="calendarMonthFilter" style="padding: 0.75rem 1rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; cursor: pointer; background: var(--white); color: var(--primary-color); font-weight: 600;" onchange="loadRides()">
+                                <option value="all" selected>All Months</option>
+                            </select>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <label for="calendarRideFilter" style="font-weight: 600; color: var(--primary-color); white-space: nowrap;">Status:</label>
+                            <select id="calendarRideFilter" style="padding: 0.75rem 1rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; cursor: pointer; background: var(--white); color: var(--primary-color); font-weight: 600;" onchange="loadRides()">
+                                <option value="all" selected>All Rides</option>
+                                <option value="pending">Pending</option>
+                                <option value="my-rides">My Rides</option>
+                                <option value="needs-confirmation">Needs Confirmation</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="calendarGrid" class="calendar-grid">
+                    <!-- Calendar will be loaded here -->
+                </div>
+            </div>
+            
+            <div id="daysOffView" class="calendar-view">
+                <div class="days-off-container">
+                    <div class="days-off-section">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">My Days Off</h2>
+                        <div class="add-day-off">
+                            <input type="date" id="dayOffDate" style="padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; margin-right: 1rem;">
+                            <button class="accept-btn" onclick="addDayOffHandler()">Add Day Off</button>
+                        </div>
+                        <div id="myDaysOffList" class="days-off-list" style="margin-top: 2rem;">
+                            <!-- Days off will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="days-off-section">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">All Drivers' Days Off</h2>
+                        <div id="allDriversDaysOff" class="days-off-list">
+                            <!-- All drivers days off will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="notificationsView" class="calendar-view">
+                <div class="notifications-container">
+                    <div class="notifications-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h2 style="color: var(--primary-color); margin: 0;">Notifications</h2>
+                        <button class="accept-btn" onclick="markAllNotificationsReadHandler()" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Mark All as Read</button>
+                    </div>
+                    <div id="notificationsList" class="notifications-list">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div id="messagesView" class="calendar-view">
+                <div style="background: var(--white); padding: 2rem; border-radius: 10px; box-shadow: var(--shadow);">
+                    <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Messages</h2>
+                    <div style="display: flex; gap: 1rem; margin-bottom: 1rem; border-bottom: 2px solid var(--light-bg);">
+                        <button id="btn-driverDirectMessages" onclick="switchDriverMessageView('direct')" style="padding: 0.75rem 1.5rem; background: var(--primary-color); color: white; border: none; border-radius: 5px 5px 0 0; cursor: pointer; font-weight: 600;">Direct Messages</button>
+                        <button id="btn-driverGroupChat" onclick="switchDriverMessageView('group')" style="padding: 0.75rem 1.5rem; background: var(--light-bg); color: var(--text-color); border: none; border-radius: 5px 5px 0 0; cursor: pointer; font-weight: 600;">Group Chat <span id="driverGroupChatBadge" class="notification-badge" style="display: none;">0</span></button>
+                    </div>
+                    <div id="driverDirectMessagesView" style="display: grid; grid-template-columns: 300px 1fr; gap: 1.5rem; height: 600px;">
+                        <!-- Conversations List -->
+                        <div style="border-right: 2px solid var(--light-bg); padding-right: 1.5rem; overflow-y: auto;">
+                            <h3 style="color: var(--primary-color); margin-bottom: 1rem; font-size: 1.1rem;">Conversations</h3>
+                            <div id="driverConversationsList" style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                <!-- Conversations will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Area -->
+                        <div style="display: flex; flex-direction: column;">
+                            <div id="driverChatHeader" style="padding-bottom: 1rem; border-bottom: 2px solid var(--light-bg); margin-bottom: 1rem;">
+                                <h3 style="color: var(--primary-color); margin: 0;">Select a conversation</h3>
+                            </div>
+                            <div id="driverChatMessages" style="flex: 1; overflow-y: auto; margin-bottom: 1rem; padding: 1rem; background: var(--light-bg); border-radius: 5px;">
+                                <!-- Messages will be displayed here -->
+                            </div>
+                            <div id="driverChatInputArea" style="display: none;">
+                                <form id="driverMessageForm" style="display: flex; gap: 0.5rem;">
+                                    <input type="hidden" id="driverChatWithUsername">
+                                    <input type="text" id="driverMessageInput" placeholder="Type a message..." required style="flex: 1; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    <button type="submit" style="padding: 0.75rem 1.5rem; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Send</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Group Chat View -->
+                    <div id="driverGroupChatView" style="display: none; height: 600px; flex-direction: column;">
+                        <div style="padding: 1rem; background: var(--primary-color); color: white; border-radius: 5px 5px 0 0; margin-bottom: 1rem;">
+                            <h3 style="margin: 0; font-size: 1.2rem;">Group Chat - All Admins & Drivers</h3>
+                            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; opacity: 0.9;">Communicate with all team members in one place</p>
+                        </div>
+                        <div id="driverGroupChatMessages" style="flex: 1; overflow-y: auto; margin-bottom: 1rem; padding: 1rem; background: var(--light-bg); border-radius: 5px; min-height: 400px;">
+                            <!-- Group messages will be displayed here -->
+                        </div>
+                        <form id="driverGroupMessageForm" style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="driverGroupMessageInput" placeholder="Type a message to the group..." required style="flex: 1; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            <button type="submit" style="padding: 0.75rem 1.5rem; background: var(--primary-color); color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">Send</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="profileView" class="calendar-view">
+                <div class="profile-container" style="max-width: 900px; margin: 0 auto;">
+                    <div class="profile-section" style="background: var(--white); padding: 2rem; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 2rem;">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Profile Settings</h2>
+                        
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 2rem;">
+                            <div style="position: relative; margin-bottom: 1rem;">
+                                <img id="driverPhoto" src="" alt="Driver Photo" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid var(--primary-color); background: var(--light-bg); display: none;">
+                                <div id="driverPhotoPlaceholder" style="width: 150px; height: 150px; border-radius: 50%; background: var(--light-bg); border: 4px solid var(--primary-color); display: flex; align-items: center; justify-content: center; font-size: 3rem; color: var(--primary-color);">
+                                    👤
+                                </div>
+                            </div>
+                            <input type="file" id="photoUpload" accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                            <button class="accept-btn" onclick="document.getElementById('photoUpload').click()" style="padding: 0.5rem 1.5rem; font-size: 0.9rem;">Upload Photo</button>
+                        </div>
+                        
+                        <form id="profileForm" onsubmit="updateProfile(event)">
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Name</label>
+                                <input type="text" id="profileName" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;" readonly>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Username</label>
+                                <input type="text" id="profileUsername" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; background: #f5f5f5;" readonly>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Email</label>
+                                <input type="email" id="profileEmail" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Phone Number</label>
+                                <input type="tel" id="profilePhone" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">My Vehicles</label>
+                                <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">Add all vehicles you have available. You can only accept rides that match your vehicle types.</p>
+                                <div id="vehiclesList" style="margin-bottom: 1rem;">
+                                    <!-- Vehicles will be loaded here -->
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <select id="newVehicleType" style="flex: 1; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        <option value="">Select Vehicle Type</option>
+                                        <option value="SEDANS">SEDANS</option>
+                                        <option value="SUV">SUV</option>
+                                        <option value="XL SUV">XL SUV</option>
+                                    </select>
+                                    <input type="text" id="newVehicleDetails" placeholder="e.g., White Toyota Camry" style="flex: 2; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    <button type="button" class="accept-btn" onclick="addVehicle()" style="padding: 0.75rem 1.5rem; font-size: 0.9rem;">Add Vehicle</button>
+                                </div>
+                            </div>
+                            
+                            <div style="border-top: 2px solid var(--light-bg); padding-top: 1.5rem; margin-top: 1.5rem;">
+                                <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Change Password</h3>
+                                
+                                <div class="form-group" style="margin-bottom: 1.5rem;">
+                                    <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Current Password</label>
+                                    <input type="password" id="currentPassword" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                </div>
+                                
+                                <div class="form-group" style="margin-bottom: 1.5rem;">
+                                    <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">New Password</label>
+                                    <input type="password" id="newPassword" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                </div>
+                                
+                                <div class="form-group" style="margin-bottom: 1.5rem;">
+                                    <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                </div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" class="accept-btn" style="flex: 1; padding: 0.75rem;">Save Changes</button>
+                                <button type="button" class="modal-cancel-btn" onclick="loadProfile()" style="flex: 1; padding: 0.75rem;">Reset</button>
+                            </div>
+                            
+                            <div id="profileMessage" style="margin-top: 1rem; padding: 1rem; border-radius: 5px; display: none;"></div>
+                        </form>
+                    </div>
+                    
+                    <div class="add-ride-section" style="background: var(--white); padding: 2rem; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 2rem;">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Add Ride Manually</h2>
+                        <p style="color: #666; margin-bottom: 1.5rem; font-size: 0.95rem;">Use this form to add a ride when a customer contacts you directly. You can assign it to yourself or post it for other drivers to accept.</p>
+                        
+                        <form id="addRideForm" onsubmit="handleAddRide(event)">
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Customer Name *</label>
+                                <input type="text" id="addRideName" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Customer Email *</label>
+                                <input type="email" id="addRideEmail" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Customer Phone *</label>
+                                <input type="tel" id="addRidePhone" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Pickup Location *</label>
+                                <select id="addRidePickup" required onchange="handleAddRideLocationChange('pickup')" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    <option value="">Select Pickup Location</option>
+                                    <option value="Home">Home</option>
+                                    <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                                    <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                                    <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                                    <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                                    <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                                    <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                                    <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div id="addRidePickupOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>Street Address</label>
+                                        <input type="text" id="addRidePickupStreet" placeholder="123 Main Street" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>City</label>
+                                        <input type="text" id="addRidePickupCity" placeholder="City" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem;">
+                                        <div class="form-group">
+                                            <label>State</label>
+                                            <input type="text" id="addRidePickupState" placeholder="CA" maxlength="2" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Zip Code</label>
+                                            <input type="text" id="addRidePickupZip" placeholder="92688" maxlength="10" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="addRidePickupHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>Street Address</label>
+                                        <input type="text" id="addRidePickupHomeStreet" placeholder="123 Main Street" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>City</label>
+                                        <input type="text" id="addRidePickupHomeCity" placeholder="City" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem;">
+                                        <div class="form-group">
+                                            <label>State</label>
+                                            <input type="text" id="addRidePickupHomeState" placeholder="CA" maxlength="2" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Zip Code</label>
+                                            <input type="text" id="addRidePickupHomeZip" placeholder="92688" maxlength="10" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Destination *</label>
+                                <select id="addRideDestination" required onchange="handleAddRideLocationChange('destination')" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    <option value="">Select Destination</option>
+                                    <option value="Home">Home</option>
+                                    <option value="John Wayne Airport (SNA)">John Wayne Airport (SNA)</option>
+                                    <option value="Los Angeles Airport (LAX)">Los Angeles Airport (LAX)</option>
+                                    <option value="Long Beach Airport (LGB)">Long Beach Airport (LGB)</option>
+                                    <option value="San Diego Airport (SAN)">San Diego Airport (SAN)</option>
+                                    <option value="Ontario Airport (ONT)">Ontario Airport (ONT)</option>
+                                    <option value="Cross Border (CBX)">Cross Border (CBX)</option>
+                                    <option value="Long Beach Cruise Terminal">Long Beach Cruise Terminal</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                                <div id="addRideDestinationOtherAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>Street Address</label>
+                                        <input type="text" id="addRideDestinationStreet" placeholder="123 Main Street" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>City</label>
+                                        <input type="text" id="addRideDestinationCity" placeholder="City" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem;">
+                                        <div class="form-group">
+                                            <label>State</label>
+                                            <input type="text" id="addRideDestinationState" placeholder="CA" maxlength="2" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Zip Code</label>
+                                            <input type="text" id="addRideDestinationZip" placeholder="92688" maxlength="10" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="addRideDestinationHomeAddress" style="display: none; margin-top: 1rem; padding: 1rem; background: #f8f9fa; border-radius: 5px;">
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>Street Address</label>
+                                        <input type="text" id="addRideDestinationHomeStreet" placeholder="123 Main Street" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                                        <label>City</label>
+                                        <input type="text" id="addRideDestinationHomeCity" placeholder="City" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 0.75rem;">
+                                        <div class="form-group">
+                                            <label>State</label>
+                                            <input type="text" id="addRideDestinationHomeState" placeholder="CA" maxlength="2" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Zip Code</label>
+                                            <input type="text" id="addRideDestinationHomeZip" placeholder="92688" maxlength="10" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="addRideIsAirportTrip" onchange="toggleAddRideFlightInfo()">
+                                    <span>This is an airport trip</span>
+                                </label>
+                            </div>
+                            
+                            <div id="addRideFlightInfoSection" style="display: none; background: #f8f9fa; padding: 1rem; border-radius: 5px; margin-bottom: 1.5rem;">
+                                <div class="form-group" style="margin-bottom: 1rem;">
+                                    <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Flight Number</label>
+                                    <input type="text" id="addRideFlightNumber" placeholder="e.g., AA1234" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                </div>
+                                <div class="form-group">
+                                    <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Airline</label>
+                                    <input type="text" id="addRideAirline" placeholder="e.g., American Airlines" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Date *</label>
+                                <input type="date" id="addRideDate" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Time *</label>
+                                <input type="time" id="addRideTime" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Number of Passengers *</label>
+                                <input type="number" id="addRidePassengers" min="1" max="6" required onchange="updateAddRideVehicleTypeOptions()" oninput="updateAddRideVehicleTypeOptions()" style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;">SEDANS (up to 3), SUV (up to 4), XL SUV (up to 6)</p>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem;">
+                                <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Vehicle Type *</label>
+                                <select id="addRideVehicleType" required style="width: 100%; padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem;">
+                                    <option value="">Select Vehicle Type</option>
+                                    <option value="SEDANS">SEDANS</option>
+                                    <option value="SUV">SUV</option>
+                                    <option value="XL SUV">XL SUV</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group" id="addRideBaggageClaimGroup" style="display: none; margin-bottom: 1.5rem;">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="addRideBaggageClaim" value="Y">
+                                    <span>Driver will meet passenger in baggage claim area</span>
+                                </label>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 5px; border: 2px solid var(--primary-color);">
+                                <label style="display: block; margin-bottom: 0.75rem; color: var(--primary-color); font-weight: 600;">Assign Ride</label>
+                                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="radio" name="addRideAssign" value="self" id="addRideAssignSelf" onchange="checkAddRideConflict()">
+                                        <span>Assign to myself</span>
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="radio" name="addRideAssign" value="others" id="addRideAssignOthers" checked>
+                                        <span>Post for other drivers to accept</span>
+                                    </label>
+                                </div>
+                                <div id="addRideConflictMessage" style="margin-top: 0.75rem; padding: 0.75rem; border-radius: 5px; display: none;"></div>
+                            </div>
+                            
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" class="accept-btn" style="flex: 1; padding: 0.75rem;">Add Ride</button>
+                                <button type="button" class="modal-cancel-btn" onclick="resetAddRideForm()" style="flex: 1; padding: 0.75rem;">Reset</button>
+                            </div>
+                            
+                            <div id="addRideMessage" style="margin-top: 1rem; padding: 1rem; border-radius: 5px; display: none;"></div>
+                        </form>
+                    </div>
+                    
+                    <div class="income-section" style="background: var(--white); padding: 2rem; border-radius: 10px; box-shadow: var(--shadow);">
+                        <h2 style="color: var(--primary-color); margin-bottom: 1.5rem;">Monthly Income Statements</h2>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <label style="display: block; margin-bottom: 0.5rem; color: var(--primary-color); font-weight: 600;">Select Month</label>
+                            <input type="month" id="incomeMonth" style="padding: 0.75rem; border: 2px solid #e0e0e0; border-radius: 5px; font-size: 1rem; width: 100%; max-width: 300px;" onchange="loadMonthlyIncome()">
+                        </div>
+                        
+                        <div id="monthlyIncomeDisplay">
+                            <!-- Monthly income will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Reschedule Modal -->
+    <div id="rescheduleModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Reschedule Ride</h2>
+                <button class="close-btn" onclick="closeRescheduleModal()">&times;</button>
+            </div>
+            <form id="rescheduleForm">
+                <input type="hidden" id="rescheduleRideId">
+                <div class="modal-form-group">
+                    <label for="rescheduleDate">New Date</label>
+                    <input type="date" id="rescheduleDate" required>
+                </div>
+                <div class="modal-form-group">
+                    <label for="rescheduleTime">New Time</label>
+                    <input type="time" id="rescheduleTime" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="modal-cancel-btn" onclick="closeRescheduleModal()">Cancel</button>
+                    <button type="submit" class="modal-submit-btn">Reschedule & Notify Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="driver-auth.js"></script>
+    <script src="rates.js"></script>
+    <script src="pricing-calculator.js"></script>
+    <script src="driver-dashboard.js"></script>
+</body>
+</html>
+

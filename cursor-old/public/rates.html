@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Rates - South County Ride Share</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .rates-page {
+            min-height: 100vh;
+            background: var(--light-bg);
+        }
+        
+        .rates-header {
+            background: var(--off-white);
+            color: var(--primary-color);
+            padding: 2rem 20px;
+            text-align: center;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .rates-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: var(--white);
+            color: var(--primary-color);
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .rates-content {
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 0 20px;
+        }
+        
+        .rates-card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+        
+        .destination-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-bg);
+        }
+        
+        .destination-header h2 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        .destination-header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .rates-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+        
+        /* Main rates table (2 columns) */
+        .rates-table:not(.fees-table) {
+            table-layout: fixed;
+        }
+        
+        .rates-table:not(.fees-table) th:first-child,
+        .rates-table:not(.fees-table) td:first-child {
+            width: 50%;
+        }
+        
+        .rates-table:not(.fees-table) th:last-child,
+        .rates-table:not(.fees-table) td:last-child {
+            width: 50%;
+        }
+        
+        /* Fees table (3 columns) */
+        .rates-table.fees-table {
+            table-layout: auto;
+        }
+        
+        .rates-table.fees-table th:first-child,
+        .rates-table.fees-table td:first-child {
+            width: auto;
+        }
+        
+        .rates-table.fees-table th:nth-child(2),
+        .rates-table.fees-table td:nth-child(2) {
+            width: auto;
+        }
+        
+        .rates-table.fees-table th:last-child,
+        .rates-table.fees-table td:last-child {
+            width: auto;
+            min-width: 100px;
+        }
+        
+        .rates-table th {
+            background: var(--primary-color);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .rates-table th:first-child {
+            text-align: left;
+        }
+        
+        .rates-table th:last-child {
+            text-align: right;
+        }
+        
+        .rates-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+            vertical-align: middle;
+        }
+        
+        .rates-table td:first-child {
+            text-align: left;
+        }
+        
+        .rates-table td:last-child {
+            text-align: right;
+        }
+        
+        /* Fees table alignment */
+        .rates-table.fees-table th:nth-child(2),
+        .rates-table.fees-table td:nth-child(2) {
+            text-align: left;
+        }
+        
+        .rates-table.fees-table th:last-child,
+        .rates-table.fees-table td:last-child {
+            text-align: right;
+        }
+        
+        .rates-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .rates-table tr:hover {
+            background: var(--light-bg);
+        }
+        
+        .vehicle-type {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+        
+        .contact-info {
+            background: var(--light-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .contact-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        
+        .contact-info p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+        
+        .additional-fees {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--light-bg);
+        }
+        
+        .fees-title {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 700;
+        }
+        
+        .fees-table {
+            margin-top: 1rem;
+        }
+        
+        .fee-desc {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .rates-table {
+                font-size: 0.9rem;
+            }
+            
+            .rates-table th,
+            .rates-table td {
+                padding: 0.75rem 0.5rem;
+            }
+            
+            .fee-desc {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="index.html">
+                    <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" class="logo">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li><a href="index.html#about" class="nav-link">ABOUT</a></li>
+                    <li><a href="index.html#pricing" class="nav-link">PRICING</a></li>
+                    <li><a href="index.html#reserve" class="nav-link">RESERVE</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="rates-page">
+        <div class="rates-header">
+            <div style="margin-bottom: 1rem;">
+                <img src="assets/SC_Rideshare_Final_Logo.jpg" alt="South County Ride Share Logo" style="max-width: 200px; height: auto; margin-bottom: 1rem;">
+            </div>
+            <h1>Transportation Rates</h1>
+            <p>View pricing for your destination</p>
+            <a href="index.html" class="back-btn">← Back to Home</a>
+        </div>
+        
+        <div class="rates-content">
+            <div class="rates-card">
+                <div class="destination-header">
+                    <h2 id="destinationName">Loading...</h2>
+                    <p id="destinationDesc">Please wait...</p>
+                </div>
+                
+                <div id="ratesContainer" class="loading">
+                    <p>Loading rates...</p>
+                </div>
+                
+                <div class="contact-info">
+                    <a href="index.html#reserve" class="submit-btn" style="display: inline-block; text-decoration: none; width: auto; padding: 0.75rem 2rem;">Make a Reservation</a>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem; padding: 2rem 0;">
+                <a href="index.html" class="back-btn">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="rates.js?v=5"></script>
+</body>
+</html>
+
